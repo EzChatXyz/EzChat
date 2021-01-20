@@ -1,0 +1,242 @@
+<html>
+  <head>
+    <title>EzChat</title  >
+    <meta charset="UTF-8">
+    <meta name="description" content="An easy way to chat">
+    <meta name="keywords" content="HTML, CSS, JavaScript">
+    <meta name="author" content="ssebastianoo">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+    var socket = io();
+      $(document).ready(function() {
+            socket.on('connect', function() {
+              socket.emit('connected', {data: 'I\'m connected!'});
+            });
+
+            $('.text-input').keypress((e) => {
+              if (e.which === 13) {
+                newMessage();
+              }
+            });
+
+            socket.on('messageReceived', function(data) {
+              messages = document.getElementsByClassName("message-container");
+              messages[0].remove();
+              var msgContainer = document.createElement("div");
+              msgContainer.classList.add("message-container");
+              msgContainer.innerHTML = `
+<div class="pic-message">
+<img class="message" src="${data['user']['pic']}">
+</div>
+<div class="message">
+<a class="user"><strong>${data["user"]["name"]}:</strong></a> <a class="text">${data["text"]}</a>
+</div>
+<br>
+`
+document.getElementById("messages").appendChild(msgContainer);
+            });
+        });
+
+      function newMessage() {
+        text = document.getElementById("text").value;
+        if (text === "") {
+          return
+        };
+        socket.emit("new_message", {"text": text, "user_id": "{{user_id}}"});
+        document.getElementById("text").value = ""
+      }
+    </script>
+    <style id="css">
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">EzChat</h1>
+      <div class="messages" id="messages">
+        {% for msg in messages %}
+        <div class="message-container">
+            <div class="pic-message">
+              <img class="message" src="{{msg['user']['pic']}}">
+            </div>
+            <div class="message">
+              <a class="user"><strong>{{msg["user"]["name"]}}:</strong></a> <a class="text">{{msg["text"]}}</a>
+            </div>
+            <br>
+        </div>
+        {% endfor %}
+      </div>
+      <input class="text-input" id="text" type="text" maxlength="500" name="text" placeholder="message" required autocomplete="off"><br>
+      <input class="submit-input" id="submit" type="submit" onclick="newMessage()">
+    </div>
+    <br>
+    <script>
+      var css = document.getElementById("css")
+
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+        css.innerHTML =
+  `
+        body {
+          font-family: 'Roboto', sans-serif;
+          font-size: 25px;
+          background-color: #1c1d1f;
+        }
+
+        .title {
+          background-color: #7a8599;
+          letter-spacing: 30px;
+        }
+
+        .message-container {
+          display: flex;
+          align-items: center;
+          min-height: 70px;
+          border: 1px solid rgba(0, 0, 0, 0.8);
+          width: 480px;
+          background: #515057;
+          color: white;
+        }
+
+        .text {
+          word-wrap: break-word;
+          white-space: -moz-pre-wrap;
+          white-space: pre-wrap;
+        }
+
+        div.message {
+          max-width: 410px;
+        }
+
+        .user-input, .text-input, .submit-input {
+          width: 479px;
+          height: 50px;
+        }
+
+        ::placeholder {
+          color: white;
+          font-family: 'Roboto', sans-serif;
+        }
+
+        :-ms-input-placeholder {
+          color: white;
+          font-family: 'Roboto', sans-serif;
+        }
+
+        ::-ms-input-placeholder {
+          color: white;
+          font-family: 'Roboto', sans-serif;
+        }
+
+        .text-input {
+          background: #73727a;
+          outline: none;
+          color: white;
+          font-size: 20px;
+        }
+
+        .submit-input {
+          background: #908e99;
+          outline: none;
+        }
+
+        .date {
+          margin-right: 5px;
+        }
+
+        img.message {
+          width: 50px;
+          margin-left: 10px;
+          margin-right: 10px;
+          border-radius: 10px;
+        }
+   `
+      } else {
+        css.innerHTML =
+`
+      body {
+        font-family: 'Roboto', sans-serif;
+        font-size: 25px;
+        background-color: #1c1d1f;
+      }
+
+      .title {
+        background-color: #7a8599;
+        letter-spacing: 30px;
+      }
+
+      .container {
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+      }
+
+      .message-container {
+        display: flex;
+        align-items: center;
+        min-height: 70px;
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        width: 600px;
+        background: #515057;
+        color: white;
+      }
+
+      .text {
+        word-wrap: break-word;
+        white-space: -moz-pre-wrap;
+        white-space: pre-wrap;
+      }
+
+      div.message {
+        max-width: 530px;
+      }
+
+      .user-input, .text-input, .submit-input {
+        width: 602px;
+        height: 50px;
+      }
+
+      ::placeholder {
+        color: white;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      :-ms-input-placeholder {
+        color: white;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      ::-ms-input-placeholder {
+        color: white;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      .text-input {
+        background: #73727a;
+        outline: none;
+        color: white;
+        font-size: 20px;
+      }
+
+      .submit-input {
+        background: #908e99;
+        outline: none;
+      }
+
+      .date {
+        margin-right: 5px;
+      }
+
+      img.message {
+        width: 50px;
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 10px;
+      }
+ `
+      }
+    </script>
+  </body>
+</html>
