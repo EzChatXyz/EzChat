@@ -11,9 +11,6 @@ GOOGLE_DISCOVERY_URL = ("https://accounts.google.com/.well-known/openid-configur
 
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
-cluster = pymongo.MongoClient(config.db)
-db = cluster['EzChat']
-
 app = Flask("")
 app.secret_key = config.secret_key
 
