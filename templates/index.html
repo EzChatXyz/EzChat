@@ -19,7 +19,7 @@
         socket.emit("new_message", { "text": text, "user": {"name": "{{user['name']}}", "pic": "{{user['pic']}}"} });
         document.getElementById("text").value = "";
       };
-      var socket = io();
+      var socket = io.connect('{{domain}}');
       $(document).ready(function() {
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});

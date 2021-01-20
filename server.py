@@ -92,9 +92,9 @@ def connected(data):
 def index():
     if request.method == "GET":
         if not current_user.is_authenticated:
-            return render_template("not-logged.html")
+            return render_template("not-logged.html", domain=config.domain)
 
-        return render_template("index.html", user=current_user)
+        return render_template("index.html", user=current_user, domain=config.domain)
 
 @socketio.on("new_message")
 def new_message(data):
