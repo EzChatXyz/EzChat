@@ -11,7 +11,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
-    var socket = io();
+      function newMessage() {
+        text = document.getElementById("text").value;
+        if (text === "") {
+          return
+        };
+        socket.emit("new_message", { "text": text, "user": {"name": "{{user['name']}}", "pic": "{{user['pic']}}"} });
+        document.getElementById("text").value = "";
+      };
+      var socket = io();
       $(document).ready(function() {
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});
@@ -23,9 +31,13 @@
               }
             });
 
-            socket.on('messageReceived', function(data) {
+            socket.on('message', function(data) {
+              console.log(data)
               messages = document.getElementsByClassName("message-container");
-              messages[0].remove();
+              console.log(messages.length)
+              if (messages.length > 4) {
+                messages[0].remove();
+              };
               var msgContainer = document.createElement("div");
               msgContainer.classList.add("message-container");
               msgContainer.innerHTML = `
@@ -37,18 +49,9 @@
 </div>
 <br>
 `
-document.getElementById("messages").appendChild(msgContainer);
+              document.getElementById("messages").appendChild(msgContainer);
             });
         });
-
-      function newMessage() {
-        text = document.getElementById("text").value;
-        if (text === "") {
-          return
-        };
-        socket.emit("new_message", {"text": text, "user_id": "{{user_id}}"});
-        document.getElementById("text").value = ""
-      }
     </script>
     <style id="css">
     </style>
@@ -56,21 +59,11 @@ document.getElementById("messages").appendChild(msgContainer);
   <body>
     <div class="container">
       <h1 class="title">EzChat</h1>
-      <div class="messages" id="messages">
-        {% for msg in messages %}
-        <div class="message-container">
-            <div class="pic-message">
-              <img class="message" src="{{msg['user']['pic']}}">
-            </div>
-            <div class="message">
-              <a class="user"><strong>{{msg["user"]["name"]}}:</strong></a> <a class="text">{{msg["text"]}}</a>
-            </div>
-            <br>
-        </div>
-        {% endfor %}
+      <div class="messages" id="messages"></div>
+      <div id="inputs">
+        <input class="text-input input" id="text" type="text" maxlength="500" name="text" placeholder="message" required autocomplete="off"><br>
+        <input class="submit-input input" id="submit" type="submit" onclick="newMessage()">
       </div>
-      <input class="text-input" id="text" type="text" maxlength="500" name="text" placeholder="message" required autocomplete="off"><br>
-      <input class="submit-input" id="submit" type="submit" onclick="newMessage()">
     </div>
     <br>
     <script>
@@ -235,7 +228,31 @@ document.getElementById("messages").appendChild(msgContainer);
         margin-right: 10px;
         border-radius: 10px;
       }
+
  `
+      }
+
+      window.onscroll = function() {scrollBar()};
+      var inputs = document.getElementById("inputs");
+      var sticky = inputs.offsetDown;
+
+      function scrollBar() {
+        if (window.pageYOffset >= sticky) {
+          inputs.classList.add("sticky")
+        } else {
+          inputs.classList.remove("sticky");
+        }
+      }
+
+      var items = document.getElementsByClassName("input");
+      function bar() {
+      	for (i=0; i < items.length; i++) {
+      		if (items[i].style.display === "none") {
+      			items[i].style.display = "unset";
+      		} else {
+      			items[i].style.display = "none";
+      		}
+      	}
       }
     </script>
   </body>

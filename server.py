@@ -23,6 +23,8 @@ socketio = flask_socketio.SocketIO(app, async_mode=async_mode)
 class User(UserMixin):
   pass
 
+users = {}
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -31,11 +33,14 @@ def get_google_provider_cfg():
 
 @login_manager.user_loader
 def user_loader(id):
-    u = db["users"].find_one({"id": id})
+    try:
+        u = users[id]
+    except KeyError:
+        return None
     user = User()
     user.id=id
     user.name=u["name"]
-    user.pic=u["profile_pic"]
+    user.pic=u["pic"]
     return user
 
 @app.route("/login")
@@ -70,19 +75,14 @@ def callback():
         users_name = userinfo_response.json()["name"]
     else:
         return "User email not available or not verified by Google.", 400
+
     user = User()
     user.id=unique_id
     user.name=users_name
     user.email=users_email
     user.profile_pic=picture
-    db_user = db["users"].find_one({"id": user.id})
-    u = {"id": user.id, "name": user.name, "email": user.email, "profile_pic": user.profile_pic}
 
-    if not db_user:
-        db["users"].insert_one(u)
-
-    else:
-        db["users"].update_one({"id": user.id}, {"$set": u})
+    users[user.id] = {"name": user.name, "email": user.email, "pic": user.profile_pic}
 
     login_user(user)
     return redirect("/")
@@ -94,32 +94,14 @@ def connected(data):
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
-
-        messages = db["messages"].find()
-        messages = [msg for msg in messages]
-        messages.reverse()
-        new_messages = []
-        count = 0
-        for msg in messages:
-            if count > 4:
-                break
-            else:
-                new_messages.append({"user": {"name": msg["user"]["name"], "pic": msg["user"]["pic"]}, "text": msg["text"], "date": humanize.naturaltime(msg["date"])})
-                count += 1
-        new_messages.reverse()
         if not current_user.is_authenticated:
-            return render_template("not-logged.html", messages=new_messages)
+            return render_template("not-logged.html")
 
-        return render_template("index.html", messages=new_messages, user_id=current_user.id)
+        return render_template("index.html", user=current_user)
 
 @socketio.on("new_message")
 def new_message(data):
-    print("ue")
-    now = datetime.datetime.utcnow()
-    user = db["users"].find_one({"id": data["user_id"]})
-    body = {"user": {"name": user["name"], "pic": user["profile_pic"]}, "text": data["text"], "date": now}
-    db["messages"].insert_one(body)
-    socketio.emit("messageReceived", {"text": data["text"], "user": {"name": user["name"], "pic": user["profile_pic"]}, "date": humanize.naturaltime(now)})
+    socketio.emit("message", data)
 
 @app.route("/logout")
 @login_required
@@ -128,4 +110,4 @@ def logout():
     return redirect(url_for("index"))
 
 #app.run(host="0.0.0.0",port=8080, debug=True)
-socketio.run(app, host="0.0.0.0", port=config.port)
+socketio.run(app, host="0.0.0.0", port=config.port, debug=True)

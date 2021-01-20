@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
-    var socket = io();
+      var socket = io();
       $(document).ready(function() {
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});
@@ -23,9 +23,13 @@
               }
             });
 
-            socket.on('messageReceived', function(data) {
+            socket.on('message', function(data) {
+              console.log(data)
               messages = document.getElementsByClassName("message-container");
-              messages[0].remove();
+              console.log(messages.length)
+              if (messages.length > 4) {
+                messages[0].remove();
+              };
               var msgContainer = document.createElement("div");
               msgContainer.classList.add("message-container");
               msgContainer.innerHTML = `
@@ -37,15 +41,9 @@
 </div>
 <br>
 `
-document.getElementById("messages").appendChild(msgContainer);
+              document.getElementById("messages").appendChild(msgContainer);
             });
         });
-
-      function newMessage() {
-        text = document.getElementById("text").value;
-        socket.emit("new_message", {"text": text, "user_id": "{{user_id}}"});
-        document.getElementById("text").value = ""
-      }
     </script>
     <style id="css">
     </style>
