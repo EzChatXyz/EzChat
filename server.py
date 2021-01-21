@@ -15,7 +15,7 @@ app = Flask("")
 app.secret_key = config.secret_key
 
 async_mode = None
-socketio = flask_socketio.SocketIO(app, async_mode=async_mode)
+socketio = flask_socketio.SocketIO(app, async_mode=async_mode, logger=True, engineio_logger=True)
 
 class User(UserMixin):
   pass
