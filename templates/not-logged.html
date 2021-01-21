@@ -52,17 +52,18 @@
     <div class="container">
       <h1 class="title">EzChat</h1>
       <div class="messages" id="messages">
-        {% for msg in messages %}
-        <div class="message-container">
+        <div class="messages" id="messages">
+          {% for message in messages %}
+          <div class="message-container">
             <div class="pic-message">
-              <img class="message" src="{{msg['user']['pic']}}">
+              <img class="message" src="{{data['user']['pic']}}">
             </div>
             <div class="message">
-              <a class="user"><strong>{{msg["user"]["name"]}}:</strong></a> <a class="text">{{msg["text"]}}</a>
+              <a class="user"><strong>{{data["user"]["name"]}}:</strong></a> <a class="text">{{data["text"]}}</a>
             </div>
-            <br>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
       <a href="login"><button class="submit-input">Login to Chat</button></a>
     </div>

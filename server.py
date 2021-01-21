@@ -21,6 +21,7 @@ class User(UserMixin):
   pass
 
 users = {}
+last_messages = {}
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -93,12 +94,16 @@ def connected(data):
 def index():
     if request.method == "GET":
         if not current_user.is_authenticated:
-            return render_template("not-logged.html", domain=config.domain)
+            return render_template("not-logged.html", domain=config.domain, messages=last_messages)
 
-        return render_template("index.html", user=current_user, domain=config.domain)
+        return render_template("index.html", user=current_user, domain=config.domain, messages=last_messages)
 
 @socketio.on("new_message")
 def new_message(data):
+    if data["text"]:
+        if len(last_messages >= 4):
+            last_messages.pop(0)
+        last_messages.append(data)
     socketio.emit("message", data)
 
 @app.route("/logout")

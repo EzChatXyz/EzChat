@@ -62,7 +62,18 @@
   <body>
     <div class="container">
       <h1 class="title">EzChat</h1>
-      <div class="messages" id="messages"></div>
+      <div class="messages" id="messages">
+        {% for message in messages %}
+        <div class="message-container">
+          <div class="pic-message">
+            <img class="message" src="{{data['user']['pic']}}">
+          </div>
+          <div class="message">
+            <a class="user"><strong>{{data["user"]["name"]}}:</strong></a> <a class="text">{{data["text"]}}</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
       <div id="inputs">
         <input class="text-input input" id="text" type="text" maxlength="500" name="text" placeholder="message" required autocomplete="off"><br>
         <input class="submit-input input" id="submit" type="submit" onclick="newMessage()">
