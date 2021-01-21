@@ -18,7 +18,6 @@
         };
         const data = { "text": text, "user": {"name": "{{user['name']}}", "pic": "{{user['pic']}}"} };
         socket.emit("new_message", data);
-        console.log(data);
         document.getElementById("text").value = "";
       };
       var socket = io.connect('{{domain}}');
@@ -37,6 +36,7 @@
             });
 
             socket.on('message', function(data) {
+              console.log(data);
               messages = document.getElementsByClassName("message-container");
               if (messages.length > 4) {
                 messages[0].remove();
