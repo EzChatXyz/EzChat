@@ -21,6 +21,8 @@
       };
       var socket = io.connect('{{domain}}');
       $(document).ready(function() {
+            socket.emit("new_message", {"text": null, "user": null});
+
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});
             });
