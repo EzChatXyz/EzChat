@@ -98,8 +98,6 @@ def index():
 
 @socketio.on("new_message")
 def new_message(data):
-    if data["text"] == None:
-        return
     socketio.emit("message", data)
 
 @app.route("/logout")
