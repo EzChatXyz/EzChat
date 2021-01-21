@@ -86,12 +86,12 @@ def callback():
 
 @socketio.on('connected')
 def connected(data):
+    socketio.emit("message", {"text": None, "user": None})
     print("connected")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
-        socketio.emit("message", {"text": None, "user": None})
         if not current_user.is_authenticated:
             return render_template("not-logged.html", domain=config.domain)
 
