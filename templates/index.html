@@ -24,7 +24,6 @@
       $(document).ready(function() {
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});
-              socket.emit("new_message", {"text": null, "user": null})
             });
 
             $('.text-input').keypress((e) => {
