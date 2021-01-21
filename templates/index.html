@@ -34,7 +34,6 @@
             socket.on('message', function(data) {
               console.log(data)
               messages = document.getElementsByClassName("message-container");
-              console.log(messages.length)
               if (messages.length > 4) {
                 messages[0].remove();
               };
