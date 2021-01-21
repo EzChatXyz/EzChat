@@ -21,7 +21,7 @@ class User(UserMixin):
   pass
 
 users = {}
-last_messages = {}
+last_messages = []
 
 login_manager = LoginManager()
 login_manager.init_app(app)
