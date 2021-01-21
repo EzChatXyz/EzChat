@@ -101,7 +101,7 @@ def index():
 @socketio.on("new_message")
 def new_message(data):
     if data["text"]:
-        if len(last_messages) >= 4:
+        if len(last_messages) >= 5:
             last_messages.pop(0)
         last_messages.append(data)
     socketio.emit("message", data)
