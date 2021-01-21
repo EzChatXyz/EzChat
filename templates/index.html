@@ -36,6 +36,9 @@
             });
 
             socket.on('message', function(data) {
+              if (data["text"] === null) {
+                return
+              };
               console.log(data);
               messages = document.getElementsByClassName("message-container");
               if (messages.length > 4) {
