@@ -17,6 +17,7 @@
           return
         };
         socket.emit("new_message", { "text": text, "user": {"name": "{{user['name']}}", "pic": "{{user['pic']}}"} });
+        console.log("ignore the error above, it's just socket.io being stupid")
         document.getElementById("text").value = "";
       };
       var socket = io.connect('{{domain}}');
