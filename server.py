@@ -86,7 +86,6 @@ def callback():
 
 @socketio.on('connected')
 def connected(data):
-    socketio.emit("message", {"text": None, "user": None})
     print("connected")
 
 @app.route("/", methods=["GET", "POST"])
