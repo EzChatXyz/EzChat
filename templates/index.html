@@ -22,9 +22,6 @@
       };
       var socket = io.connect('{{domain}}');
       $(document).ready(function() {
-            socket.emit("new_message", {"text": null, "user": null});
-            console.log("ignore the error above, it's just socket.io being stupid")
-
             socket.on('connect', function() {
               socket.emit('connected', {data: 'I\'m connected!'});
             });
