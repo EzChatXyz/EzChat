@@ -1,0 +1,81 @@
+body {
+	font-family: 'Roboto', sans-serif;
+	font-size: 25px;
+	background-color: #1c1d1f;
+}
+
+.title {
+	background-color: #7a8599;
+	letter-spacing: 30px;
+}
+
+.container {
+	left: 50%;
+	transform: translateX(-50%);
+	position: absolute;
+}
+
+.message-container {
+	display: flex;
+	align-items: center;
+	min-height: 70px;
+	border: 1px solid rgba(0, 0, 0, 0.8);
+	width: 600px;
+	background: #515057;
+	color: white;
+}
+
+.text {
+	word-wrap: break-word;
+	white-space: -moz-pre-wrap;
+	white-space: pre-wrap;
+}
+
+div.message {
+	max-width: 530px;
+}
+
+.user-input,
+.text-input,
+.submit-input {
+	width: 602px;
+	height: 50px;
+}
+
+ ::placeholder {
+	color: white;
+	font-family: 'Roboto', sans-serif;
+}
+
+ :-ms-input-placeholder {
+	color: white;
+	font-family: 'Roboto', sans-serif;
+}
+
+ ::-ms-input-placeholder {
+	color: white;
+	font-family: 'Roboto', sans-serif;
+}
+
+.text-input {
+	background: #73727a;
+	outline: none;
+	color: white;
+	font-size: 20px;
+}
+
+.submit-input {
+	background: #908e99;
+	outline: none;
+}
+
+.date {
+	margin-right: 5px;
+}
+
+img.message {
+	width: 50px;
+	margin-left: 10px;
+	margin-right: 10px;
+	border-radius: 10px;
+}

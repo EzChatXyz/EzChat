@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user, UserMixin
 from oauthlib.oauth2 import WebApplicationClient
 import pymongo, datetime, humanize, requests, config, os, json, flask_socketio
@@ -106,6 +106,18 @@ def new_message(data):
         last_messages.append(data)
     socketio.emit("message", data)
 
+@app.route("/cdn/<file>")
+def files(file):
+    return send_file("cdn/" + file)
+
+@app.route("/cdn/<folder>/<file>")
+def folder_file(folder, file):
+    return send_file("cdn/" + folder + "/" + file)
+
+@app.route("/test")
+def test():
+    return render_template("test.html")
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -113,4 +125,4 @@ def logout():
     return redirect(url_for("index"))
 
 #app.run(host="0.0.0.0",port=8080, debug=True)
-socketio.run(app, host="0.0.0.0", port=config.port, debug=True)
+socketio.run(app, host="0.0.0.0", port=config.port)
